@@ -44,6 +44,11 @@
   cursor: pointer;
 }
 
+#search-btn img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
 .user-icons img {
   width: 24px;
   height: 24px;
