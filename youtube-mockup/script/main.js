@@ -3,7 +3,7 @@ const API_KEY = "AIzaSyAKa5v6A7j6q-BmU2DxfnZ_G9OUPD1OFVg";
 import { fetchTrendingVideos } from "./fetchTrending.js";
 import { fetchVideos } from "./search.js";
 import { setupSidebarToggle } from "./sidebar.js";
-import { setupInfiniteScroll } from "./infiniteScroll.js";
+// import { setupInfiniteScroll } from "./infiniteScroll.js";
 import { formatViewCount } from "./utils.js";
 import { setupCategoryFilter } from "./filter.js";
 
@@ -14,7 +14,7 @@ const sidebar = document.getElementById("sidebar");
 const menuIcon = document.getElementById("menu-icon");
 
 let currentQuery = "";
-let nextPageToken = "";
+// let nextPageToken = "";
 let allVideos = [];
 
 function getAllVideos() {
@@ -30,7 +30,7 @@ function renderVideos(videos) {
       : "No views";
     videoContainer.innerHTML += `
       <div class="card">
-        <img src="${thumbnails.medium.url}" alt="Video Thumbnail">
+        <img src="${thumbnails.medium.url}" alt="Video Thumbnail" loading="lazy">
         <div class="card-body">
           <h3>${title}</h3>
           <p>${channelTitle}</p>
@@ -40,18 +40,15 @@ function renderVideos(videos) {
     `;
   });
 }
-
 async function loadTrendingVideos() {
-  const data = await fetchTrendingVideos(API_KEY, nextPageToken);
-  nextPageToken = data.nextPageToken;
-  allVideos = [...allVideos, ...data.items];
+  const data = await fetchTrendingVideos(API_KEY);
+  allVideos = data.items;
   renderVideos(allVideos);
 }
 
 async function loadSearchVideos() {
-  const data = await fetchVideos(API_KEY, currentQuery, nextPageToken);
-  nextPageToken = data.nextPageToken;
-  allVideos = [...allVideos, ...data.items];
+  const data = await fetchVideos(API_KEY, currentQuery);
+  allVideos = data.items;
   renderVideos(allVideos);
 }
 
@@ -59,7 +56,6 @@ searchBtn.addEventListener("click", () => {
   currentQuery = searchInput.value;
   videoContainer.innerHTML = "";
   allVideos = [];
-  nextPageToken = "";
   loadSearchVideos();
 });
 
@@ -69,20 +65,19 @@ searchInput.addEventListener("keydown", (e) => {
     currentQuery = searchInput.value;
     videoContainer.innerHTML = "";
     allVideos = [];
-    nextPageToken = "";
     loadSearchVideos();
   }
 });
 
 setupSidebarToggle(menuIcon, sidebar);
 
-setupInfiniteScroll(() => {
-  if (currentQuery) {
-    loadSearchVideos();
-  } else {
-    loadTrendingVideos();
-  }
-});
+// setupInfiniteScroll(() => {
+//   if (currentQuery) {
+//     loadSearchVideos();
+//   } else {
+//     loadTrendingVideos();
+//   }
+// });
 
 loadTrendingVideos().then(() => {
   setupCategoryFilter(getAllVideos, renderVideos);
