@@ -29,3 +29,35 @@ body {
     transform: translateX(-100%);
   }
 }
+
+body.dark {
+  background-color: #181818;
+  color: #eee;
+}
+
+body.dark .header,
+body.dark .sidebar,
+body.dark .card {
+  background-color: #282828;
+  color: #eee;
+}
+
+body.dark .card-body p {
+  color: #ccc;
+}
+
+body.dark .search-bar input,
+body.dark #search-btn {
+  background-color: #383838;
+  border: 1px solid #555;
+  color: #eee;
+}
+
+body.dark .sidebar li:hover {
+  background-color: #383838;
+}
+
+body.dark .card:hover {
+  background-color: #303030;
+  transform: scale(1.03);
+}
