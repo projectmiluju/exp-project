@@ -1,63 +1,20 @@
 const API_KEY = "AIzaSyCNF_xYxweA3f0UTodoLIXDy-BGqLDnCQQ";
 
+import { fetchTrendingVideos } from "./fetchTrending.js";
+import { fetchVideos } from "./search.js";
+import { setupSidebarToggle } from "./sidebar.js";
+import { setupInfiniteScroll } from "./infiniteScroll.js";
+import { formatViewCount } from "./utils.js";
+
 const videoContainer = document.getElementById("video-container");
 const searchInput = document.getElementById("search-input");
 const searchBtn = document.getElementById("search-btn");
-const suggestionsBox = document.getElementById("suggestions");
 const sidebar = document.getElementById("sidebar");
 const menuIcon = document.getElementById("menu-icon");
 
-let nextPageToken = "";
 let currentQuery = "";
+let nextPageToken = "";
 
-// 조회수 포맷 함수
-function formatViewCount(viewCount) {
-  if (viewCount >= 1000000) {
-    return (viewCount / 1000000).toFixed(1) + "M views";
-  } else if (viewCount >= 1000) {
-    return (viewCount / 1000).toFixed(1) + "K views";
-  } else {
-    return viewCount + " views";
-  }
-}
-
-// 영상 가져오기
-async function fetchTrendingVideos(pageToken = "") {
-  let url = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&chart=mostPopular&regionCode=KR&maxResults=50&key=${API_KEY}`;
-  if (pageToken) url += `&pageToken=${pageToken}`;
-
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-    nextPageToken = data.nextPageToken;
-    renderVideos(data.items);
-    autoLoadIfNeeded();
-  } catch (error) {
-    console.error("트렌딩 비디오 API 호출 실패:", error);
-  }
-}
-
-// 검색 결과 가져오기
-async function fetchVideos(query = "", pageToken = "") {
-  let url = `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=50&type=video&key=${API_KEY}&q=${query}`;
-  if (pageToken) url += `&pageToken=${pageToken}`;
-
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-    nextPageToken = data.nextPageToken;
-    const videoIds = data.items.map((item) => item.id.videoId).join(",");
-    const videosUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${videoIds}&key=${API_KEY}`;
-    const videosResponse = await fetch(videosUrl);
-    const videosData = await videosResponse.json();
-    renderVideos(videosData.items);
-    autoLoadIfNeeded();
-  } catch (error) {
-    console.error("검색 비디오 API 호출 실패:", error);
-  }
-}
-
-// 영상 카드 추가
 function renderVideos(videos) {
   videos.forEach((video) => {
     const { title, channelTitle, thumbnails } = video.snippet;
@@ -77,55 +34,44 @@ function renderVideos(videos) {
   });
 }
 
-// 무한 스크롤
-window.addEventListener("scroll", () => {
-  if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
-    if (nextPageToken) {
-      if (currentQuery) {
-        fetchVideos(currentQuery, nextPageToken);
-      } else {
-        fetchTrendingVideos(nextPageToken);
-      }
-    }
-  }
-});
-
-// 스크롤 부족 시 자동 추가 로딩
-function autoLoadIfNeeded() {
-  if (window.innerHeight >= document.body.scrollHeight - 100) {
-    if (nextPageToken) {
-      if (currentQuery) {
-        fetchVideos(currentQuery, nextPageToken);
-      } else {
-        fetchTrendingVideos(nextPageToken);
-      }
-    }
-  }
+async function loadTrendingVideos() {
+  const data = await fetchTrendingVideos(API_KEY, nextPageToken);
+  nextPageToken = data.nextPageToken;
+  renderVideos(data.items);
 }
 
-// 검색 버튼 클릭
+async function loadSearchVideos() {
+  const data = await fetchVideos(API_KEY, currentQuery, nextPageToken);
+  nextPageToken = data.nextPageToken;
+  renderVideos(data.items);
+}
+
 searchBtn.addEventListener("click", () => {
   currentQuery = searchInput.value;
   videoContainer.innerHTML = "";
-  fetchVideos(currentQuery);
+  loadSearchVideos();
 });
 
-// 엔터 키로 검색
 searchInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     e.preventDefault();
     currentQuery = searchInput.value;
     videoContainer.innerHTML = "";
-    fetchVideos(currentQuery);
+    loadSearchVideos();
   }
 });
 
-// 햄버거 메뉴 클릭
-menuIcon.addEventListener("click", () => {
-  sidebar.classList.toggle("show");
+setupSidebarToggle(menuIcon, sidebar);
+
+setupInfiniteScroll(() => {
+  if (currentQuery) {
+    loadSearchVideos();
+  } else {
+    loadTrendingVideos();
+  }
 });
 
-fetchTrendingVideos();
+loadTrendingVideos();
 
 // 유튜브 추천어 가져오기
 // let activeSuggestionIndex = -1;
