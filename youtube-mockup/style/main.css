@@ -14,12 +14,11 @@ body {
 
 .main {
   margin-left: 80px;
-  margin_top: 0px;
+  margin-top: 120px;
   padding: 20px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
-  transition: margin-left 0.3s ease;
 }
 
 @media (max-width: 768px) {
@@ -38,28 +37,31 @@ body.dark {
 }
 
 body.dark .header,
-body.dark .sidebar,
+body.dark .sidebar {
+  background-color: #181818;
+  color: #eee;
+}
+
 body.dark .card {
   background-color: #282828;
-  color: #eee;
 }
 
 body.dark .search-bar input,
 body.dark #search-btn {
-  background-color: #383838;
+  background-color: #181818;
   border: 1px solid #555;
   color: #eee;
 }
 
 body.dark .sidebar {
-  background-color: #282828;
+  background-color: #181818;
 }
 
 body.dark .sidebar li:hover {
-  background-color: #383838;
+  background-color: #181818;
 }
 
 body.dark .card:hover {
-  background-color: #303030;
+  background-color: #181818;
   transform: scale(1.03);
 }

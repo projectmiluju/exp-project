@@ -6,7 +6,6 @@
   top: 60px;
   left: 0;
   padding-top: 20px;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   transition: width 0.3s ease;
   overflow: hidden;
   z-index: 999;
@@ -53,17 +52,4 @@
 .sidebar.expanded .text {
   opacity: 1;
   visibility: visible;
-}
-
-/* 다크모드 대응 */
-body.dark .sidebar {
-  background-color: #282828;
-}
-
-body.dark .sidebar li:hover {
-  background-color: #383838;
-}
-
-body.dark .sidebar .text {
-  color: #ccc;
 }
