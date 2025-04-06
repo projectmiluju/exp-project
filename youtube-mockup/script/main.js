@@ -1,4 +1,4 @@
-const API_KEY = "AIzaSyCNF_xYxweA3f0UTodoLIXDy-BGqLDnCQQ";
+const API_KEY = "AIzaSyAKa5v6A7j6q-BmU2DxfnZ_G9OUPD1OFVg";
 
 import { fetchTrendingVideos } from "./fetchTrending.js";
 import { fetchVideos } from "./search.js";

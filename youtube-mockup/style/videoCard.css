@@ -33,3 +33,7 @@
   font-size: 14px;
   color: #555;
 }
+
+body.dark .card-body p {
+  color: #ccc;
+}
