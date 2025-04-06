@@ -5,6 +5,7 @@ import { fetchVideos } from "./search.js";
 import { setupSidebarToggle } from "./sidebar.js";
 import { setupInfiniteScroll } from "./infiniteScroll.js";
 import { formatViewCount } from "./utils.js";
+import { setupCategoryFilter } from "./filter.js";
 
 const videoContainer = document.getElementById("video-container");
 const searchInput = document.getElementById("search-input");
@@ -14,6 +15,7 @@ const menuIcon = document.getElementById("menu-icon");
 
 let currentQuery = "";
 let nextPageToken = "";
+let allVideos = [];
 
 function renderVideos(videos) {
   videos.forEach((video) => {
@@ -37,13 +39,15 @@ function renderVideos(videos) {
 async function loadTrendingVideos() {
   const data = await fetchTrendingVideos(API_KEY, nextPageToken);
   nextPageToken = data.nextPageToken;
-  renderVideos(data.items);
+  allVideos = [...allVideos, ...data.items];
+  renderVideos(allVideos);
 }
 
 async function loadSearchVideos() {
   const data = await fetchVideos(API_KEY, currentQuery, nextPageToken);
   nextPageToken = data.nextPageToken;
-  renderVideos(data.items);
+  allVideos = [...allVideos, ...data.items];
+  renderVideos(allVideos);
 }
 
 searchBtn.addEventListener("click", () => {
@@ -71,7 +75,9 @@ setupInfiniteScroll(() => {
   }
 });
 
-loadTrendingVideos();
+loadTrendingVideos().then(() => {
+  setupCategoryFilter(allVideos, renderVideos);
+});
 
 // 유튜브 추천어 가져오기
 // let activeSuggestionIndex = -1;
