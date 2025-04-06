@@ -14,13 +14,14 @@
 
 .sidebar ul {
   list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .sidebar li {
   display: flex;
-  align-items: center;
-  padding: 15px;
-  gap: 10px;
+  justify-content: center;
+  padding: 15px 0;
   cursor: pointer;
 }
 
@@ -28,10 +29,21 @@
   background: #f2f2f2;
 }
 
+.sidebar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.sidebar-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
 .sidebar .text {
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease;
+  font-size: 12px;
 }
 
 .sidebar.expanded {
@@ -41,4 +53,17 @@
 .sidebar.expanded .text {
   opacity: 1;
   visibility: visible;
+}
+
+/* 다크모드 대응 */
+body.dark .sidebar {
+  background-color: #282828;
+}
+
+body.dark .sidebar li:hover {
+  background-color: #383838;
+}
+
+body.dark .sidebar .text {
+  color: #ccc;
 }
