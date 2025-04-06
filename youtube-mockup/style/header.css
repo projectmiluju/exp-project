@@ -44,8 +44,11 @@
   cursor: pointer;
 }
 
-.user-icons span {
-  margin-left: 15px;
-  font-size: 20px;
+.user-icons img {
+  width: 24px;
+  height: 24px;
   cursor: pointer;
+  margin-left: 15px;
+  object-fit: contain;
+  border-radius: 16px;
 }
