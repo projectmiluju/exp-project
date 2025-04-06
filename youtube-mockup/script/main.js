@@ -17,7 +17,12 @@ let currentQuery = "";
 let nextPageToken = "";
 let allVideos = [];
 
+function getAllVideos() {
+  return allVideos;
+}
+
 function renderVideos(videos) {
+  videoContainer.innerHTML = "";
   videos.forEach((video) => {
     const { title, channelTitle, thumbnails } = video.snippet;
     const viewCount = video.statistics
@@ -53,6 +58,8 @@ async function loadSearchVideos() {
 searchBtn.addEventListener("click", () => {
   currentQuery = searchInput.value;
   videoContainer.innerHTML = "";
+  allVideos = [];
+  nextPageToken = "";
   loadSearchVideos();
 });
 
@@ -61,6 +68,8 @@ searchInput.addEventListener("keydown", (e) => {
     e.preventDefault();
     currentQuery = searchInput.value;
     videoContainer.innerHTML = "";
+    allVideos = [];
+    nextPageToken = "";
     loadSearchVideos();
   }
 });
@@ -76,7 +85,7 @@ setupInfiniteScroll(() => {
 });
 
 loadTrendingVideos().then(() => {
-  setupCategoryFilter(allVideos, renderVideos);
+  setupCategoryFilter(getAllVideos, renderVideos);
 });
 
 // 유튜브 추천어 가져오기
